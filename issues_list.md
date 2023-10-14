@@ -32,4 +32,4 @@ botocore.errorfactory.ResourceLimitExceeded: An error occurred (ResourceLimitExc
 Gonan try inference endpoints on huggingface itself
 __NOTE__: Inference Endpoint for this particular model is PRICEY, 1.6 an HOUR. Not worth it for ANY scaling purposes.
 
-[A] Need to setup ml.g5.2xlarge for endpoint AND training if I eventually want to be able to run fine-tuning on this deployment of AWS Sagemaker as well.
+[A] Need to setup ml.g5.2xlarge for endpoint AND training if I eventually want to be able to run fine-tuning on this deployment of AWS Sagemaker as well. This is needed for [decapoda-research/llama-7b-hf](https://huggingface.co/decapoda-research/llama-7b-hf) too, which I'm gonna try to use instead of the previous one since this is just basic ass text gen.

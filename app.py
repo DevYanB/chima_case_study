@@ -7,6 +7,9 @@ import requests
 # Flask app setup
 app = Flask(__name__)
 
+LLAMA2_MODEL_URL = "https://avdizq4m0s7moy4d.us-east-1.aws.endpoints.huggingface.cloud"
+# LLAMA2_MODEL_URL = "https://eb0cex2kcbk94qi5.us-east-1.aws.endpoints.huggingface.cloud"
+
 headers = {
 	"Authorization": "Bearer wbSiYmyZFBAcLEMgFIGGIDRvtMAZDIbkvNSgPlKzrIIucGwHfSGeblMJdGJYRLDtsvOZuCRxTavrauchfgLXQsdYKxarfWFVQEpbaNvUThlvGSkBetigQvLtxrUSPzSd",
 	"Content-Type": "application/json"
@@ -14,7 +17,7 @@ headers = {
 
 
 def query(payload):
-    response = requests.post("https://ng8bhe1yz4nw8gsv.us-east-1.aws.endpoints.huggingface.cloud", headers=headers, json=payload)
+    response = requests.post(LLAMA2_MODEL_URL, headers=headers, json=payload)
     return response.json()
 
 
@@ -33,12 +36,16 @@ def predict():
         # but also adjust AI parameters like creativity level, tone (e.g., formal, casual),
         # and style (e.g., humorous, direct)
 
+    print(data)
     instruction = f""
 
     # Pass data to the model and get the result
     result = query({
         "inputs": data,
-        "parameters": {"max_new_tokens": 150},
+         "parameters": {
+            "repetition_penalty": 4.0,
+            "max_length": 128
+        }
     })
     
     # Return the result
