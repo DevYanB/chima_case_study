@@ -22,5 +22,5 @@ Yeah, so I'm debating using either the in-built pipeline in huggingface or just 
 2. https://huggingface.co/docs/transformers/quicktour
 ___NOTE___, link 2 could also be useful for the implementing or designing the feedback based fine-tuning and saving process
 
-[A] Had some issues getting daryl149 model running locally, had to `pip install accelerate` and had to follow this tutorial:https://huggingface.co/blog/accelerate-large-models
-In the end, this is showing me it might be really inefficient without meta's llama2 to try and get this working.
+[A] Had some issues getting daryl149 model running locally, had to `pip install accelerate` and had to follow this tutorial :https://huggingface.co/blog/accelerate-large-models
+In the end, this is showing me it might be really inefficient without meta's llama2 to try and get this working local at all. So, I'm gonna deploy this model to Sagemaker and see if that helps fix some issues with the two factors and, if not, welp let's see what happens.

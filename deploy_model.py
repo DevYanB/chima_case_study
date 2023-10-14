@@ -1,3 +1,5 @@
+#NOTE: TO BE RUN IN SAGEMAKER NOTEBOOK ONLY
+
 import json
 import sagemaker
 import boto3
@@ -14,8 +16,6 @@ hub = {
 	'HF_MODEL_ID':'daryl149/llama-2-7b-chat-hf',
 	'SM_NUM_GPUS': json.dumps(1)
 }
-
-
 
 # create Hugging Face Model Class
 huggingface_model = HuggingFaceModel(
