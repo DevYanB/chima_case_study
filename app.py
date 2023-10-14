@@ -1,25 +1,19 @@
 from flask import Flask, request, jsonify
 import transformers
-from transformers import AutoConfig, AutoTokenizer, AutoModelForCausalLM, pipeline
+# from transformers import AutoConfig, AutoTokenizer, AutoModelForCausalLM, AutoModel, pipeline
+from ctransformers import AutoModelForCausalLM
 import torch
 import requests
 
 # Flask app setup
 app = Flask(__name__)
 
-LLAMA2_MODEL_URL = "https://avdizq4m0s7moy4d.us-east-1.aws.endpoints.huggingface.cloud"
-# LLAMA2_MODEL_URL = "https://eb0cex2kcbk94qi5.us-east-1.aws.endpoints.huggingface.cloud"
+model_name = "TheBloke/Llama-2-7B-GGUF"
+model = AutoModelForCausalLM.from_pretrained("TheBloke/Llama-2-7B-GGUF", model_file="llama-2-7b.q4_K_M.gguf", model_type="llama", gpu_layers=50)
 
-headers = {
-	"Authorization": "Bearer wbSiYmyZFBAcLEMgFIGGIDRvtMAZDIbkvNSgPlKzrIIucGwHfSGeblMJdGJYRLDtsvOZuCRxTavrauchfgLXQsdYKxarfWFVQEpbaNvUThlvGSkBetigQvLtxrUSPzSd",
-	"Content-Type": "application/json"
-}
-
-
-def query(payload):
-    response = requests.post(LLAMA2_MODEL_URL, headers=headers, json=payload)
-    return response.json()
-
+def query_test():
+    
+    return(jsonify(""))
 
 @app.route('/')
 def index():
@@ -40,13 +34,7 @@ def predict():
     instruction = f""
 
     # Pass data to the model and get the result
-    result = query({
-        "inputs": data,
-         "parameters": {
-            "repetition_penalty": 4.0,
-            "max_length": 128
-        }
-    })
+    result = query_test()
     
     # Return the result
     return jsonify({'result': result})
