@@ -24,3 +24,12 @@ ___NOTE___, link 2 could also be useful for the implementing or designing the fe
 
 [A] Had some issues getting daryl149 model running locally, had to `pip install accelerate` and had to follow this tutorial :https://huggingface.co/blog/accelerate-large-models
 In the end, this is showing me it might be really inefficient without meta's llama2 to try and get this working local at all. So, I'm gonna deploy this model to Sagemaker and see if that helps fix some issues with the two factors and, if not, welp let's see what happens.
+
+[A] Using an async endpoint in sagemaker: https://docs.aws.amazon.com/sagemaker/latest/dg/async-inference-create-invoke-update-delete.html to allow it to run efficiently and scale better
+
+[A] MY instance type didn't support the model I found
+botocore.errorfactory.ResourceLimitExceeded: An error occurred (ResourceLimitExceeded) when calling the CreateEndpoint operation: The account-level service limit 'ml.g5.2xlarge for endpoint usage' is 0 Instances, with current utilization of 0 
+Gonan try inference endpoints on huggingface itself
+__NOTE__: Inference Endpoint for this particular model is PRICEY, 1.6 an HOUR. Not worth it for ANY scaling purposes.
+
+[A] Need to setup ml.g5.2xlarge for endpoint AND training if I eventually want to be able to run fine-tuning on this deployment of AWS Sagemaker as well.
