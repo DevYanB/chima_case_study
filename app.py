@@ -46,8 +46,8 @@ class Feedback(db.Model):
     feedback = db.Column(db.String, nullable=False)
 
 
-# LLAMA2_MODEL_URL = "https://avdizq4m0s7moy4d.us-east-1.aws.endpoints.huggingface.cloud"
-LLAMA2_MODEL_URL = "https://eb0cex2kcbk94qi5.us-east-1.aws.endpoints.huggingface.cloud"
+
+LLAMA2_MODEL_URL = os.environ['LLAMA2_URL']
 
 headers = {
 	"Authorization": inference_header,

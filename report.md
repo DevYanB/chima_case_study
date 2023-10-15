@@ -15,7 +15,7 @@ The fine-tuning process would be relatively straightforward once the Sagemaker i
 
 This would require a notebook instance to periodically run, implementing the following type of flow for text-gen, for example. One way I would likely do this is top expose this functionality on sagemaker and design a basic API to prompt this run on my own running flask server: https://huggingface.co/daryl149/llama-2-7b-chat-hf?sagemaker_train=true
 
-This would also allow me to pass the feedback data to the API. Of course, if deployed to a container running on an EC2 instance, I could simply use a bucket to store said feedback or smth and poll when this process was initiated. Some data proc would need to be done, which can be as straightforward as mapping keywords and creativity, style, and tone to liked and non-lined variants.
+This would also allow me to pass the feedback data to the API. Of course, if deployed to a container running on an EC2 instance, I could simply use a bucket to store said feedback or smth and poll when this process was initiated. Some data proc would need to be done, which can be as straightforward as mapping keywords and creativity, style, and tone to liked and non-liked variants.
 
 # Errors List
 
