@@ -4,6 +4,10 @@ from transformers import AutoConfig, AutoTokenizer, AutoModelForCausalLM, pipeli
 import torch
 import requests
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+import os
+
 
 creativity_map = {
     0: "Not Creative",
@@ -23,14 +27,30 @@ tone_map = {
 
 # Flask app setup
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['POSTGRES_URI']
+inference_header = "Bearer "+ os.environ['INFERENCE_TOKEN']
+print(os.environ['POSTGRES_URI'] )
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+CORS(app)
 
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+print("setting up")
+
+class Feedback(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sentence = db.Column(db.String, nullable=False)
+    creativity_level = db.Column(db.Integer, nullable=False)
+    tone = db.Column(db.Integer, nullable=False)
+    style = db.Column(db.String, nullable=False)
+    keywords = db.Column(db.String, nullable=False)
+    feedback = db.Column(db.String, nullable=False)
+
 
 # LLAMA2_MODEL_URL = "https://avdizq4m0s7moy4d.us-east-1.aws.endpoints.huggingface.cloud"
 LLAMA2_MODEL_URL = "https://eb0cex2kcbk94qi5.us-east-1.aws.endpoints.huggingface.cloud"
 
 headers = {
-	"Authorization": "Bearer wbSiYmyZFBAcLEMgFIGGIDRvtMAZDIbkvNSgPlKzrIIucGwHfSGeblMJdGJYRLDtsvOZuCRxTavrauchfgLXQsdYKxarfWFVQEpbaNvUThlvGSkBetigQvLtxrUSPzSd",
+	"Authorization": inference_header,
 	"Content-Type": "application/json"
 }
 
@@ -54,6 +74,46 @@ def generate_prompt(creativityLevel,tone,style,keywords):
 @app.route('/')
 def index():
     return "Welcome to Llama 2 AI Model API!"
+
+# Method for evaluating and getting all feedback entries
+@app.route('/feedback/entries', methods=['GET'])
+def get_all_entries():
+    entries = Feedback.query.all()
+    output = []
+
+    for entry in entries:
+        entry_data = {
+            'id': entry.id,
+            'sentence': entry.sentence,
+            'creativity_level': entry.creativity_level,
+            'tone': entry.tone,
+            'style': entry.style,
+            'keywords': entry.keywords,
+            'feedback': entry.feedback
+        }
+        output.append(entry_data)
+
+    return jsonify(output)
+
+@app.route('/feedback', methods=['POST'])
+def handle_feedback():
+    data = request.json
+
+    # Generating a feedback entry from the defined class above with
+    # all relevant meta-data
+    feedback_entry = Feedback(
+        sentence=data['sentence'],
+        creativity_level=data['creativityLevel'],
+        tone=data['tone'],
+        style=data['style'],
+        keywords=data['keywords'],
+        feedback=data['feedback']
+    )
+    
+    db.session.add(feedback_entry)
+    db.session.commit()
+
+    return jsonify({"message": "Feedback saved successfully!"})
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -82,23 +142,26 @@ def generate():
 
     results = []
     # Having to loop cause prompt gens are a bit wonky but 
-    # NOTE THIS IS FUCKING HELL 3 API CALLS FOR ONE QUERY
+    # NOTE THIS IS BAD: 3 API CALLS FOR ONE QUERY
     # TODO: Refine prompt engineering and model should generate more efficiently after AWS. will do after i get deployed on AWS tho
     # Another fix would be fine-tuning, see part 3 of the coding assignment
+
+    # This is needed to vary up some generated responses
+    temp_list = [0.2,0.5,1.0]
     for i in range(3):
-        # Pass data to the model and get the result
-        # result = query({
-        #     "inputs": instruction,
-        #     "parameters": {
-        #         "repetition_penalty": 4.0,
-        #         "max_new_tokens": 20
-        #     }
-        # })
-        # results.append(result[0]['generated_text'])
-        results.append("Garbage " + str(i))
+        result = query({
+            "inputs": instruction,
+            "parameters": {
+                "repetition_penalty": 4.0,
+                "max_new_tokens": 20,
+                "temperature": temp_list[i]
+            }
+        })
+        results.append(result[0]['generated_text'])
 
     print(results)
     return jsonify({'sentences': results})
 
-if __name__ == "__main__":
-    app.run(debug=True)
+if __name__ == '__main__':
+    print("FUCK")
+    app.run(host='0.0.0.0')
