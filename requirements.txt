@@ -8,9 +8,11 @@ charset-normalizer==3.3.0
 click==8.1.7
 cloudpickle==2.2.1
 contextlib2==21.6.0
+ctransformers==0.2.27
 dill==0.3.7
 filelock==3.12.4
 Flask==3.0.0
+Flask-Cors==4.0.0
 fsspec==2023.9.2
 google-pasta==0.2.0
 huggingface-hub==0.17.3
@@ -36,6 +38,7 @@ pox==0.3.3
 ppft==1.7.6.7
 protobuf==4.24.4
 psutil==5.9.5
+py-cpuinfo==9.0.0
 python-dateutil==2.8.2
 pytz==2023.3.post1
 PyYAML==6.0.1
